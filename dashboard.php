@@ -46,34 +46,13 @@ $pendencias_sql = "SELECT nome, quantidade,
                    LIMIT 5";
 $pendencias_result = $conn->query($pendencias_sql);
 
-// Eventos do calendário - agora do banco de dados
-$eventos_sql = "SELECT id, titulo, data_evento, hora, descricao 
-                FROM eventos_calendario 
-                WHERE data_evento >= CURDATE() 
-                ORDER BY data_evento ASC, hora ASC 
-                LIMIT 10";
-$eventos_result = $conn->query($eventos_sql);
-
-$eventos = [];
-if ($eventos_result && $eventos_result->num_rows > 0) {
-    while ($row = $eventos_result->fetch_assoc()) {
-        $data = new DateTime($row['data_evento']);
-        $eventos[] = [
-            'id' => $row['id'],
-            'data' => $data->format('d'),
-            'mes' => $data->format('D'),
-            'evento' => $row['titulo'],
-            'hora' => substr($row['hora'], 0, 5),
-            'descricao' => $row['descricao']
-        ];
-    }
-} else {
-    // Eventos padrão se não houver no banco
-    $eventos = [
-        ['id' => null, 'data' => '16', 'mes' => 'Qui', 'evento' => 'Remessa Cisco', 'hora' => '15:20', 'descricao' => ''],
-        ['id' => null, 'data' => '17', 'mes' => 'Sex', 'evento' => 'Reunião estoque', 'hora' => '9:00', 'descricao' => ''],
-    ];
-}
+// Eventos estáticos simples (sem banco de dados)
+$eventos = [
+    ['data' => '16', 'mes' => 'Qui', 'evento' => 'Remessa Cisco', 'hora' => '15:20'],
+    ['data' => '17', 'mes' => 'Sex', 'evento' => 'Reunião estoque', 'hora' => '9:00'],
+    ['data' => '20', 'mes' => 'Seg', 'evento' => 'Inventário mensal', 'hora' => '14:00'],
+    ['data' => '22', 'mes' => 'Qua', 'evento' => 'Chegada produtos', 'hora' => '10:30'],
+];
 
 ?>
 
@@ -139,10 +118,7 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
             font-weight: bold;
         }
 
-        .logo::before {
-            content: "⚡";
-            font-size: 28px;
-        }
+        
 
         .user-info {
             display: flex;
@@ -416,6 +392,13 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
             align-items: center;
             gap: 15px;
             margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .calendar-event:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .event-date {
@@ -447,102 +430,6 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
         .event-time {
             font-size: 12px;
             opacity: 0.8;
-        }
-
-        .event-description {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-top: 2px;
-            font-style: italic;
-        }
-
-        .event-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .edit-event-btn, .delete-event-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: background 0.2s ease;
-            font-size: 12px;
-        }
-
-        .edit-event-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .delete-event-btn:hover {
-            background: rgba(255, 0, 0, 0.2);
-        }
-
-        .add-event-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: var(--text-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-
-        .add-event-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .no-events {
-            text-align: center;
-            padding: 20px;
-            opacity: 0.7;
-        }
-
-        .no-events p {
-            margin-bottom: 5px;
-        }
-
-        .calendar-event {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        .calendar-event:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .success-message, .error-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
-        }
-
-        .success-message {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .error-message {
-            background: #f44336;
-            color: white;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
 
         .btn-back {
@@ -632,20 +519,6 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
 
         .btn-primary:hover {
             background-color: #434190;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-secondary:hover {
-            background-color: #545b62;
         }
 
         @media (max-width: 1200px) {
@@ -782,37 +655,22 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
 
                 <div class="calendar-section">
                     <div class="section-header">
-                        <div class="section-title">Calendário</div>
-                        <button class="add-event-btn" onclick="openEventModal()">+ Evento</button>
+                        <div class="section-title">Próximos eventos</div>
                     </div>
                     
                     <div class="calendar-events">
-                        <?php if (!empty($eventos)): ?>
-                            <?php foreach ($eventos as $evento): ?>
-                                <div class="calendar-event" data-event-id="<?= $evento['id'] ?>">
-                                    <div class="event-date">
-                                        <div class="event-day"><?= $evento['data'] ?></div>
-                                        <div class="event-weekday"><?= $evento['mes'] ?></div>
-                                    </div>
-                                    <div class="event-info">
-                                        <div class="event-name"><?= htmlspecialchars($evento['evento']) ?></div>
-                                        <div class="event-time"><?= $evento['hora'] ?></div>
-                                        <?php if (!empty($evento['descricao'])): ?>
-                                            <div class="event-description"><?= htmlspecialchars($evento['descricao']) ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="event-actions">
-                                        <button class="edit-event-btn" onclick="editEvent(<?= $evento['id'] ?>, '<?= htmlspecialchars($evento['evento']) ?>', '<?= $evento['hora'] ?>', '<?= htmlspecialchars($evento['descricao']) ?>')">✏️</button>
-                                        <button class="delete-event-btn" onclick="deleteEvent(<?= $evento['id'] ?>)">🗑️</button>
-                                    </div>
+                        <?php foreach ($eventos as $evento): ?>
+                            <div class="calendar-event">
+                                <div class="event-date">
+                                    <div class="event-day"><?= $evento['data'] ?></div>
+                                    <div class="event-weekday"><?= $evento['mes'] ?></div>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="no-events">
-                                <p>📅 Nenhum evento agendado</p>
-                                <small>Clique em "+ Evento" para adicionar</small>
+                                <div class="event-info">
+                                    <div class="event-name"><?= htmlspecialchars($evento['evento']) ?></div>
+                                    <div class="event-time"><?= $evento['hora'] ?></div>
+                                </div>
                             </div>
-                        <?php endif; ?>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
@@ -820,37 +678,6 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
     </div>
 
     <a href="painel.php" class="btn-back">⬅ Voltar ao Painel</a>
-
-    <!-- Modal para adicionar/editar evento -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEventModal()">&times;</span>
-            <h2 id="eventModalTitle">Adicionar Evento</h2>
-            <form id="eventForm" onsubmit="saveEvent(event)">
-                <input type="hidden" id="eventId" name="eventId">
-                <div class="form-group">
-                    <label for="eventTitle">Título do Evento:</label>
-                    <input type="text" id="eventTitle" name="eventTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="eventDate">Data:</label>
-                    <input type="date" id="eventDate" name="eventDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="eventTime">Hora:</label>
-                    <input type="time" id="eventTime" name="eventTime" required>
-                </div>
-                <div class="form-group">
-                    <label for="eventDescription">Descrição (opcional):</label>
-                    <textarea id="eventDescription" name="eventDescription" rows="3"></textarea>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" class="btn-primary">Salvar Evento</button>
-                    <button type="button" class="btn-secondary" onclick="closeEventModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Modal para adicionar item -->
     <div id="addModal" class="modal">
@@ -978,104 +805,7 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
             }
         });
 
-        // Funções do Calendário
-        function openEventModal(isEdit = false) {
-            document.getElementById('eventModal').style.display = 'block';
-            document.getElementById('eventModalTitle').textContent = isEdit ? 'Editar Evento' : 'Adicionar Evento';
-            
-            if (!isEdit) {
-                document.getElementById('eventForm').reset();
-                document.getElementById('eventId').value = '';
-                // Definir data padrão como hoje
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('eventDate').value = today;
-            }
-        }
-
-        function closeEventModal() {
-            document.getElementById('eventModal').style.display = 'none';
-        }
-
-        function editEvent(id, title, time, description) {
-            openEventModal(true);
-            document.getElementById('eventId').value = id;
-            document.getElementById('eventTitle').value = title;
-            document.getElementById('eventTime').value = time;
-            document.getElementById('eventDescription').value = description || '';
-        }
-
-        function saveEvent(event) {
-            event.preventDefault();
-            
-            const formData = new FormData();
-            const eventId = document.getElementById('eventId').value;
-            formData.append('action', eventId ? 'edit' : 'add');
-            formData.append('id', eventId);
-            formData.append('titulo', document.getElementById('eventTitle').value);
-            formData.append('data_evento', document.getElementById('eventDate').value);
-            formData.append('hora', document.getElementById('eventTime').value);
-            formData.append('descricao', document.getElementById('eventDescription').value);
-
-            fetch('gerenciar_eventos.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showMessage('Evento salvo com sucesso!', 'success');
-                    closeEventModal();
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showMessage('Erro ao salvar evento: ' + data.message, 'error');
-                }
-            })
-            .catch(error => {
-                showMessage('Erro de conexão', 'error');
-                console.error('Error:', error);
-            });
-        }
-
-        function deleteEvent(id) {
-            if (!confirm('Tem certeza que deseja excluir este evento?')) {
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('action', 'delete');
-            formData.append('id', id);
-
-            fetch('gerenciar_eventos.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showMessage('Evento excluído com sucesso!', 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showMessage('Erro ao excluir evento: ' + data.message, 'error');
-                }
-            })
-            .catch(error => {
-                showMessage('Erro de conexão', 'error');
-                console.error('Error:', error);
-            });
-        }
-
-        function showMessage(message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type + '-message';
-            messageDiv.textContent = message;
-            document.body.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                messageDiv.remove();
-            }, 3000);
-        }
-
-        // Funções do Modal original
+        // Funções do Modal
         function openModal() {
             document.getElementById('addModal').style.display = 'block';
         }
@@ -1086,7 +816,6 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
 
         function addNewItem(event) {
             event.preventDefault();
-            // Aqui você pode adicionar a lógica para enviar os dados via AJAX
             alert('Funcionalidade de adicionar item será implementada!');
             closeModal();
         }
@@ -1095,16 +824,12 @@ if ($eventos_result && $eventos_result->num_rows > 0) {
             window.location.href = `mailto:${email}`;
         }
 
-        // Fechar modais ao clicar fora
+        // Fechar modal ao clicar fora
         window.onclick = function(event) {
             const addModal = document.getElementById('addModal');
-            const eventModal = document.getElementById('eventModal');
             
             if (event.target == addModal) {
                 closeModal();
-            }
-            if (event.target == eventModal) {
-                closeEventModal();
             }
         }
     </script>

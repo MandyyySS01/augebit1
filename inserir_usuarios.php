@@ -91,143 +91,133 @@ $conn->close();
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
             transition: all 0.3s ease;
         }
         
-        body.dark-theme {
-            background: #1a1a1a;
+        /* ========== VARIÁVEIS CSS - CORES DOS TEMAS ========== */
+        :root[data-theme="light"] {
+            --bg-color: #F7F7F7;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --text-secondary: #666;
+            --border-color: #F7F7F7;
+            --header-bg: #F7F7F7;
+            --gradient-start: #6c5ce7;
+            --gradient-end: #a29bfe;
+            --toggle-bg: #e0e0e0;
+            --toggle-inactive: #999;
+            --toggle-hover-bg: rgba(108, 92, 231, 0.1);
+            --toggle-active-bg: #6c5ce7;
+            --toggle-active-text: #ffffff;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #5a548a;
+            --bg-gradient: linear-gradient(135deg, #555586 0%, #764ba2 100%);
+            --card-bg:  #ffffff;
+            --text-color:rgb(0, 0, 0);
+            --text-secondary:rgb(0, 0, 0);
+            --border-color: #555586;
+            --header-bg: #555586;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+            --toggle-bg: #40407a;
+            --toggle-inactive: #ffffff;
+            --toggle-hover-bg: rgba(102, 126, 234, 0.2);
+            --toggle-active-bg: #667eea;
+            --toggle-active-text: #ffffff;
+;
         }
         
-        .header {
-            background: #fff;
-            padding: 15px 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        /* ========== HEADER PRINCIPAL - IGUAL AO PAINEL ========== */
+        .main-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
+            padding: 15px 30px;
+            background-color: var(--header-bg);
+            margin-bottom: 0;
         }
-        
-        body.dark-theme .header {
-            background: #2d2d2d;
-            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
-        }
-        
-        .logo-container {
+
+        .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: #333;
-            font-size: 18px;
-            font-weight: 600;
         }
-        
-        body.dark-theme .logo-container {
-            color: #fff;
+
+        #logo-light {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
         }
-        
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #6366f1;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
+
+        #logo-dark {
+            height: 58px;
+            width: auto;
+            object-fit: cover;
+            margin-top: 4px;
+            margin-left: 2px;
         }
-        
+
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
-        
-        .theme-toggle {
+
+        /* ========== TOGGLE DE TEMA - IGUAL AO PAINEL ========== */
+        .theme-toggle-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #6b7280;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
+            background-color: var(--toggle-bg);
+            border-radius: 25px;
+            padding: 3px;
             transition: all 0.3s ease;
-        }
-        
-        body.dark-theme .theme-toggle {
-            background: #4b5563;
-        }
-        
-        .theme-toggle span {
-            font-size: 12px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .theme-switch {
-            width: 32px;
-            height: 16px;
-            background: #9ca3af;
-            border-radius: 8px;
             position: relative;
-            transition: all 0.3s ease;
         }
-        
-        .theme-switch.dark {
-            background: #ffffff;
-        }
-        
-        .theme-switch::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s ease;
-        }
-        
-        .theme-switch.dark::after {
-            background: #6b7280;
-            left: 18px;
-        }
-        
-        .notification-btn {
-            width: 40px;
-            height: 40px;
-            background: #f1f1f3;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .theme-toggle {
             cursor: pointer;
+            background-color: transparent;
             border: none;
-            font-size: 16px;
+            color: var(--toggle-inactive);
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 22px;
+            font-size: 13px;
             transition: all 0.3s ease;
+            min-width: 70px;
+            position: relative;
+            z-index: 2;
         }
-        
-        body.dark-theme .notification-btn {
-            background: #404040;
+
+        .theme-toggle:hover:not(.active) {
+            background-color: var(--toggle-hover-bg);
+            color: var(--text-color);
+            transform: translateX(2px);
         }
-        
+
+        .theme-toggle.active {
+            background-color: var(--toggle-active-bg);
+            color: var(--toggle-active-text);
+        }
+
+        .theme-toggle.active:hover {
+            transform: translateX(-2px);
+        }
+
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
+            background-color: var(--gradient-start);
+            color: white;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         
         .main-container {
@@ -237,16 +227,12 @@ $conn->close();
         }
         
         .profile-card {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: #5E67AD;
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
-        }
-        
-        body.dark-theme .profile-card {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         }
         
         .profile-title {
@@ -257,16 +243,11 @@ $conn->close();
         }
         
         .profile-form-container {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-        }
-        
-        body.dark-theme .profile-form-container {
-            background: #2d2d2d;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.05);
         }
         
         .profile-header-section {
@@ -323,22 +304,14 @@ $conn->close();
         .profile-name {
             font-size: 24px;
             font-weight: 600;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 5px;
         }
         
-        body.dark-theme .profile-name {
-            color: #fff;
-        }
-        
         .profile-role {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 16px;
             margin-bottom: 10px;
-        }
-        
-        body.dark-theme .profile-role {
-            color: #ccc;
         }
         
         .edit-link {
@@ -371,39 +344,24 @@ $conn->close();
         .form-label {
             font-size: 14px;
             font-weight: 500;
-            color: #374151;
+            color: var(--text-color);
             margin-bottom: 8px;
-        }
-        
-        body.dark-theme .form-label {
-            color: #d1d5db;
         }
         
         .form-input {
             padding: 12px 16px;
-            border: 1px solid #d1d5db;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
-            background: #f9fafb;
+            background: var(--card-bg);
+            color: var(--text-color);
             transition: all 0.2s ease;
-        }
-        
-        body.dark-theme .form-input {
-            background: #374151;
-            border-color: #4b5563;
-            color: #fff;
         }
         
         .form-input:focus {
             outline: none;
             border-color: #6366f1;
-            background: white;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        body.dark-theme .form-input:focus {
-            background: #4b5563;
-            border-color: #6366f1;
         }
         
         .phone-group {
@@ -417,17 +375,12 @@ $conn->close();
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f9fafb;
-            border: 1px solid #d1d5db;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             gap: 5px;
-        }
-        
-        body.dark-theme .country-code {
-            background: #374151;
-            border-color: #4b5563;
-            color: #fff;
+            color: var(--text-color);
         }
         
         .date-input-wrapper {
@@ -455,8 +408,6 @@ $conn->close();
         .password-input-wrapper {
             position: relative;
         }
-
-
 
         .password-strength {
             margin-top: 8px;
@@ -487,12 +438,8 @@ $conn->close();
 
         .strength-text {
             font-size: 12px;
-            color: #6b7280;
+            color: var(--text-secondary);
             min-width: 60px;
-        }
-
-        body.dark-theme .strength-text {
-            color: #9ca3af;
         }
         
         .form-actions {
@@ -502,7 +449,7 @@ $conn->close();
         }
         
         .save-btn {
-            background: #6366f1;
+            background: #555586;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -536,7 +483,27 @@ $conn->close();
             color: #991b1b;
             border: 1px solid #fca5a5;
         }
-        
+        /* Oculta os dois ícones por padrão */
+.icon-light, .icon-dark {
+    display: none;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Mostra o bell.png no tema claro */
+:root[data-theme="light"] .icon-light {
+    display: inline-block;
+}
+
+/* Mostra o sino.png no tema escuro */
+:root[data-theme="dark"] .icon-dark {
+    display: inline-block;
+}
+
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -567,29 +534,38 @@ $conn->close();
             .profile-form-container {
                 padding: 20px;
             }
+
+            .main-header {
+                padding: 15px 20px;
+            }
+
+            .theme-toggle {
+                padding: 8px 14px;
+                font-size: 12px;
+                min-width: 60px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo-container">
-            <img src="img/logoescura1.png" alt="">
-            <span>AUGEBIT</span>
+    <!-- Header principal - IGUAL AO PAINEL -->
+    <header class="main-header">
+        <div class="logo">
+            <!-- LOGO PARA MODO CLARO -->
+            <img id="logo-light" src="img/logo3.png" alt="Logo Modo Claro" style="display: block;">
+            <!-- LOGO PARA MODO ESCURO -->
+            <img id="logo-dark" src="img/logo9.png" alt="Logo Modo Escuro" style="display: none;">
         </div>
         <div class="header-controls">
-            <div class="theme-toggle" onclick="toggleTheme()">
-                <span>Escuro</span>
-                <div class="theme-switch" id="themeSwitch"></div>
-                <span>Claro</span>
+            <img src="img/bell.png" alt="Notificações" class="header-icon icon-light">
+            <img src="img/sino.png" alt="Notificações" class="header-icon icon-dark">
+            <div class="theme-toggle-container">
+                <button class="theme-toggle active" onclick="toggleTheme('light')" id="lightBtn">Claro</button>
+                <button class="theme-toggle" onclick="toggleTheme('dark')" id="darkBtn">Escuro</button>
             </div>
-            <button class="notification-btn">🔔</button>
-            <div class="user-avatar">
-                <div style="width: 100%; height: 100%; background: linear-gradient(45deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                    ?
-                </div>
-            </div>
+            <div class="user-avatar">?</div>
         </div>
-    </div>
+    </header>
 
     <div class="main-container">
         <div class="profile-card">
@@ -661,7 +637,7 @@ $conn->close();
                             <select id="cargo" name="cargo" class="form-input select-input" required>
                                 <option value="">Selecione o cargo</option>
                                 <option value="Fornecedor">Fornecedor</option>
-                                <option value="Fornecedor">Funcionário</option>
+                                <option value="Funcionário">Funcionário</option>
                                 <option value="Gerente">Gerente</option>
                             </select>
                         </div>
@@ -675,7 +651,7 @@ $conn->close();
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="save-btn">Cadastrar Usuário</button>
+                        <button type="submit" class="save-btn">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -683,21 +659,51 @@ $conn->close();
     </div>
 
     <script>
-        let isDarkTheme = false;
+        // ========== FUNÇÃO PARA ALTERNAR TEMA - IGUAL AO PAINEL ==========
+        function toggleTheme(theme) {
+            const root = document.documentElement;
+            root.setAttribute('data-theme', theme);
 
-        function toggleTheme() {
-            isDarkTheme = !isDarkTheme;
-            const body = document.body;
-            const themeSwitch = document.getElementById('themeSwitch');
+            // Atualiza botões com animação suave
+            document.getElementById('darkBtn').classList.remove('active');
+            document.getElementById('lightBtn').classList.remove('active');
+            document.getElementById(theme + 'Btn').classList.add('active');
 
-            if (isDarkTheme) {
-                body.classList.add('dark-theme');
-                themeSwitch.classList.add('dark');
+            // ========== TROCA DE LOGO BASEADA NO TEMA ==========
+            const logoLight = document.getElementById('logo-light');
+            const logoDark = document.getElementById('logo-dark');
+
+            if (theme === 'light') {
+                logoLight.style.display = 'block';
+                logoDark.style.display = 'none';
+                console.log('☀️ Logo claro ativado');
             } else {
-                body.classList.remove('dark-theme');
-                themeSwitch.classList.remove('dark');
+                logoLight.style.display = 'none';
+                logoDark.style.display = 'block';
+                console.log('🌙 Logo escuro ativado');
             }
+
+            // Salva preferência no localStorage
+            localStorage.setItem('theme', theme);
+            console.log('🎨 Tema alterado para:', theme);
         }
+
+        // ========== INICIALIZAÇÃO DO TEMA ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            toggleTheme(savedTheme);
+
+            // Event listeners para os botões com feedback visual
+            document.getElementById('lightBtn').addEventListener('click', function() {
+                toggleTheme('light');
+                console.log('☀️ Modo claro ativado');
+            });
+
+            document.getElementById('darkBtn').addEventListener('click', function() {
+                toggleTheme('dark');
+                console.log('🌙 Modo escuro ativado');
+            });
+        });
 
         function updateProfile() {
             const nome = document.getElementById('nome').value;
@@ -721,16 +727,6 @@ $conn->close();
             const primeiroNome = nome ? nome.charAt(0).toUpperCase() : '';
             const ultimoNome = sobrenome ? sobrenome.charAt(0).toUpperCase() : '';
             return `${primeiroNome}${ultimoNome}` || '?';
-        }
-
-        function togglePassword() {
-            const passwordInput = document.getElementById('senha');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
         }
 
         function checkPasswordStrength() {
